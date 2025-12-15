@@ -2,6 +2,10 @@
 
 A comprehensive tool designed to help Product Owners and teams groom Jira tickets effectively. It analyzes ticket descriptions using AI to provide quality scores, identify missing information, suggest improvements, and estimate story points.
 
+# NOTE
+
+This application is made using AI tools and agents.
+
 ## Features
 
 - **Jira Integration**: Securely connect to your Jira instance to fetch projects and issues.

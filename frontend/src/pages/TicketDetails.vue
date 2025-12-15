@@ -5,7 +5,8 @@ import api from '../services/api'
 import BasicDialog from '../components/BasicDialog.vue'
 import Spinner from '../components/ui/Spinner.vue'
 import JiraDescription from '../components/jira/JiraDescription.vue'
-import { Loader2, AlertCircle, CheckCircle2, ArrowLeft, Sparkles, Calendar, User, Tag, MessageCircle } from 'lucide-vue-next'
+import { Loader2, AlertCircle, CheckCircle2, ArrowLeft, Sparkles, Calendar, User, Tag, MessageCircle, Download } from 'lucide-vue-next'
+import { generateAnalysisPDF } from '../utils/pdfGenerator'
 
 const route = useRoute()
 const router = useRouter()
@@ -16,6 +17,8 @@ const showAnalysis = ref(false)
 const analyzing = ref(false)
 const analysisResult = ref(null)
 const analysisError = ref(null)
+const downloadingPDF = ref(false)
+const pdfDownloadError = ref(null)
 
 const fetchTicket = async () => {
   try {
@@ -43,6 +46,38 @@ const runAnalysis = async () => {
     analysisError.value = e.response?.data?.error || e.message
   } finally {
     analyzing.value = false
+  }
+}
+
+const downloadPDF = async () => {
+  downloadingPDF.value = true
+  pdfDownloadError.value = null
+  
+  try {
+    if (!ticket.value || !analysisResult.value) {
+      throw new Error('Missing ticket or analysis data')
+    }
+    await generateAnalysisPDF(ticket.value, analysisResult.value)
+    // Show success notification
+    if (window.$notify) {
+      window.$notify.success({
+        group: 'BEV',
+        title: '',
+        text: 'PDF downloaded successfully!'
+      })
+    }
+  } catch (e) {
+    console.error('PDF download failed:', e)
+    pdfDownloadError.value = e.message
+    if (window.$notify) {
+      window.$notify.error({
+        group: 'BEV',
+        title: '',
+        text: `PDF download failed: ${e.message}`
+      })
+    }
+  } finally {
+    downloadingPDF.value = false
   }
 }
 
@@ -141,6 +176,17 @@ onMounted(fetchTicket)
               <Sparkles class="w-6 h-6 text-purple-600" />
               AI Grooming Report
             </h2>
+            <button
+              v-if="analysisResult && !analyzing"
+              @click="downloadPDF"
+              :disabled="downloadingPDF"
+              class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
+              :title="downloadingPDF ? 'Generating PDF...' : 'Download as PDF'"
+            >
+              <Download class="w-4 h-4" />
+              <span class="hidden sm:inline">{{ downloadingPDF ? 'Generating...' : 'Download PDF' }}</span>
+              <span class="sm:hidden">PDF</span>
+            </button>
           </div>
           
           <div v-if="analyzing" class="flex flex-col items-center justify-center py-16">
