@@ -10,6 +10,9 @@ coverage/
 build/
 dist/
 
+# ai implementations
+implementations_docs/
+
 # Misc
 .DS_Store
 .env
