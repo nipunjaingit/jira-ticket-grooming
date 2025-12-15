@@ -11,7 +11,7 @@ build/
 dist/
 
 # ai implementations
-implementations_docs/
+implementation_docs/
 
 # Misc
 .DS_Store
