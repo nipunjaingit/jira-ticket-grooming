@@ -124,26 +124,25 @@ app.post('/api/analysis', async (req, res) => {
       return res.status(400).json({ error: 'Ticket data is required' })
     }
 
-    const prompt = `Act as a Senior Product Owner and analyze this Jira ticket. Provide a comprehensive grooming report in JSON format.
-    
-    Ticket Summary: ${ticket.fields.summary}
-    Description: ${ticket.fields.description ? JSON.stringify(ticket.fields.description) : 'No description'}
-    
+    const systemPrompt = `You are a Senior Product Owner with expertise in Agile methodologies, user story grooming, and technical requirements analysis. Your task is to analyze Jira tickets and provide detailed grooming reports that help development teams understand and implement the requirements effectively. User will send Summary and Description of the ticket. The output should be a JSON object containing the following fields:
     Output JSON schema:
-    {
-      "summary": "Brief summary of the ticket",
-      "score": "Number 0-100 representing quality of description",
-      "goodPoints": ["List of well-defined aspects"],
-      "missingPoints": ["List of missing critical information"],
-      "mismatches": ["List of contradictions or ambiguities"],
-      "uiSuggestions": ["List of UI/UX related suggestions"],
-      "technicalSuggestions": ["List of technical implementation suggestions"],
-      "acceptanceCriteria": ["Refined list of ACs"],
-      "storyPoints": "Estimated story points (number)"
-    }
-    `
+      {
+        "summary": "Brief summary of the ticket",
+        "score": "Number 0-100 representing quality of description",
+        "goodPoints": ["List of well-defined aspects"],
+        "missingPoints": ["List of missing critical information"],
+        "mismatches": ["List of contradictions or ambiguities"],
+        "uiSuggestions": ["List of UI/UX related suggestions"],
+        "technicalSuggestions": ["List of technical implementation suggestions"],
+        "acceptanceCriteria": ["Refined list of ACs"],
+        "storyPoints": "Estimated story points (number)"
+        "questions": ["List of clarifying questions to ask the reporter"]
+      }
+    `;
 
-    const result = await generate(prompt, { apiKey: llmApiKey })
+    const prompt = `Ticket Summary: ${ticket.fields.summary}\n\nDescription: ${ticket.fields.description ? JSON.stringify(ticket.fields.description) : 'No description'}`
+
+    const result = await generate(systemPrompt, prompt, { apiKey: llmApiKey })
     
     // Try to parse JSON, if it fails, just return the text
     try {

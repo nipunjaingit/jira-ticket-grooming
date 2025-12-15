@@ -11,9 +11,9 @@ const apiClient = axios.create({
 
 export default {
   async validateAuth(auth) {
-    const response = await apiClient.get('/jira/myself', {
+    const response = await apiClient.get("/jira/myself", {
       headers: {
-        'x-encoded-auth': auth,
+        "x-encoded-auth": auth,
       },
     });
     return response.data;

@@ -5,7 +5,7 @@ import api from '../services/api'
 import BasicDialog from '../components/BasicDialog.vue'
 import Spinner from '../components/ui/Spinner.vue'
 import JiraDescription from '../components/jira/JiraDescription.vue'
-import { Loader2, AlertCircle, CheckCircle2, ArrowLeft, Sparkles, Calendar, User, Tag } from 'lucide-vue-next'
+import { Loader2, AlertCircle, CheckCircle2, ArrowLeft, Sparkles, Calendar, User, Tag, MessageCircle } from 'lucide-vue-next'
 
 const route = useRoute()
 const router = useRouter()
@@ -255,6 +255,20 @@ onMounted(fetchTicket)
                   <li v-for="(ac, i) in analysisResult.acceptanceCriteria" :key="i" class="flex items-start gap-3 text-gray-700 bg-white p-3 rounded border border-gray-100 shadow-sm">
                     <div class="w-1.5 h-1.5 rounded-full bg-green-500 mt-2 shrink-0"></div>
                     <span class="leading-relaxed">{{ ac }}</span>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Clarifying Questions -->
+              <div v-if="analysisResult.questions?.length" class="md:col-span-2">
+                <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <MessageCircle class="w-5 h-5 text-cyan-500" />
+                  Clarifying Questions
+                </h3>
+                <ul class="space-y-3">
+                  <li v-for="(q, i) in analysisResult.questions" :key="i" class="flex items-start gap-3 text-gray-700 bg-white p-3 rounded border border-gray-100 shadow-sm">
+                    <div class="w-1.5 h-1.5 rounded-full bg-cyan-500 mt-2 shrink-0"></div>
+                    <span class="leading-relaxed">{{ q }}</span>
                   </li>
                 </ul>
               </div>
