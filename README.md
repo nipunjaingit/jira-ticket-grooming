@@ -4,7 +4,7 @@ A comprehensive tool designed to help Product Owners and teams groom Jira ticket
 
 # NOTE
 
-This application is made using AI tools and agents.
+This application is made using **AI tools and agents**.
 
 ## Features
 
